@@ -1,1 +1,18 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><link rel="stylesheet" href="index.css"></head><body><div id="head"><div class="container"><div class="title">AKB統計</div><div class="subtitle">AKB48 × Statistics</div></div></div><div id="contents"><div class="container"><a href="mentions"><div class="row"><div class="col-sm-1"></div><div class="item-wrapper col-xs-12 col-sm-10"><div class="item"><div class="img"><img src="images/mentions.png"></div><div class="desc"><div class="title">仲良し相関図</div><div class="comment">メンバーの誰と誰が仲良しなのか表した関係図です。ぐぐたすのデータを解析して作りました。</div></div></div></div><div class="col-sm-1"></div></div></a><div class="row"><div class="col-xs-12"><div class="misc">To be added...</div></div></div></div></div></body></html>
+<!DOCTYPE html><html lang="ja"><head><title>AKB統計</title><meta charset="utf-8"><meta name="description" content="AKB48グループに関係するデータを活用して、なんだか面白そうなことをして楽しもう、というのが目的のWebサイトです。"><meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><link rel="stylesheet" href="index.css"></head><body><script type="text/javascript" src="/vendor/jquery/dist/jquery.min.js"></script><div id="outer"><div id="head"><div class="container"><div class="title"><a href="/">AKB統計</a></div><div class="subtitle">AKB48 × Statistics</div></div></div><div id="contents"><div class="container"><div class="row"><div class="col-sm-1"></div><a href="mentions"><div class="item-wrapper col-xs-12 col-sm-10"><div class="item"><div class="img"><img src="images/mentions.png"/></div><div class="desc"><div class="title">仲良し相関図</div><div class="comment">メンバーの誰と誰が仲良しなのか表した関係図です。ぐぐたすのデータを解析して作りました。</div></div></div></div><div class="col-sm-1"></div></a></div><div class="row"><div class="col-xs-12"><div class="misc">To be added...
+</div></div></div></div></div><div id="footer"><a href="about.html">About</a> <span class="sep">|</span> <a onclick="this.setAttribute('href', 'mailto:'+__getemailaddr()); return true;">Contact</a><script type="text/javascript">var __getemailaddr = function(){ 
+  coded = "N21URV5@1l2.4lp"
+  key = "FbuCYR9csTAgdkByZrwG6z4NQW3o0XUtJvijPmEaSHlM87nLO5Kqpe1DI2hxfV"
+  shift = coded.length
+  link=""
+  for (i=0; i<coded.length; i++) {
+    if (key.indexOf(coded.charAt(i))==-1) {
+      ltr = coded.charAt(i)
+      link += (ltr)
+    }
+    else {     
+      ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+      link += (key.charAt(ltr))
+    }
+  }
+  return link
+}</script></div></div></body></html>
