@@ -87,12 +87,12 @@
     members = [];
     range_margin = R_NODE * 3;
     force_general = d3.layout.force().gravity(0.0).charge(0.0).friction(0.0).nodes([]).size([container_width, container_height]);
+    $('.loading').show();
     return d3.json('data/members.json', function(error, _members) {
       var collide, enterFocusMode, enterGeneralMode, force_focus, getTargetMemberIdsFromUrl, is_thumbnail_loaded, member, memberId, scale_x, scale_y, showActivities, skip, thumbnail, tick, updateNodePosition, updateNodePositions, updateNodes, updateUrl;
       if (error) {
         console.warn(error);
       }
-      $('#now-loading').hide();
       scale_x = d3.scale.linear().range([(container_width - width) / 2 + range_margin, (container_width - width) / 2 + width - range_margin]).domain(d3.extent((_.values(_members)).map(function(member) {
         return member.x[0];
       })));
@@ -287,7 +287,8 @@
         thumbnail.onload = function() {
           d3.selectAll('g.node').classed('img-loaded', true);
           is_thumbnail_loaded = true;
-          return updateNodePositions();
+          updateNodePositions();
+          return $('.loading').hide();
         };
         thumbnail.src = "images/thumbnails.png";
         defs.selectAll('clipPath.node-thumbnail').data(members, function(member) {
@@ -490,8 +491,10 @@
           member = members[k];
           member.focused = member.selected = member.fixed = false;
         }
+        $('.loading').show();
         d3.json("data/references/" + target_member['member_id'] + ".json", function(error, ref) {
           var focused_members, l, len1, len2, len3, n, o, ref1, ref2, ref_member_ids;
+          $('.loading').hide();
           force_general.stop();
           $("g#focused-nodes g.node").detach().appendTo('g#general-nodes');
           ref_member_ids = _.keys(ref['ref_activity_ids']);
