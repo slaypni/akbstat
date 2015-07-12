@@ -88,7 +88,7 @@
     range_margin = R_NODE * 3;
     force_general = d3.layout.force().gravity(0.0).charge(0.0).friction(0.0).nodes([]).size([container_width, container_height]);
     return d3.json('data/members.json', function(error, _members) {
-      var collide, enterFocusMode, enterGeneralMode, force_focus, getTargetMemberIdsFromUrl, member, memberId, scale_x, scale_y, showActivities, skip, tick, updateNodePosition, updateNodePositions, updateNodes, updateUrl;
+      var collide, enterFocusMode, enterGeneralMode, force_focus, getTargetMemberIdsFromUrl, is_thumbnail_loaded, member, memberId, scale_x, scale_y, showActivities, skip, thumbnail, tick, updateNodePosition, updateNodePositions, updateNodes, updateUrl;
       if (error) {
         console.warn(error);
       }
@@ -140,7 +140,7 @@
             return member.x - member.r;
           },
           'y': function(member) {
-            return member.y - member.r;
+            return member.y - member.r - (member.r * 2) * member['thumbnail_index'] - (member['thumbnail_offset'] - (thumbnail.height / members.length) * member['thumbnail_index']) * (((member.r * 2) * members.length) / thumbnail.height);
           }
         });
         return g_nodes.select("g.node#node-" + member['member_id'] + " circle.overlay").attr({
@@ -160,14 +160,16 @@
             return "m" + (member.x - member.r * 1.1) + "," + member.y + " a" + (member.r * 1.1) + "," + (member.r * 1.1) + " 0 0 1 " + (member.r * 2.2) + ",0";
           }
         });
-        g_nodes.selectAll('g.node image').attr({
-          'x': function(member) {
-            return member.x - member.r;
-          },
-          'y': function(member) {
-            return member.y - member.r;
-          }
-        });
+        if (is_thumbnail_loaded) {
+          g_nodes.selectAll('g.node image').attr({
+            'x': function(member) {
+              return member.x - member.r;
+            },
+            'y': function(member) {
+              return member.y - member.r - (member.r * 2) * member['thumbnail_index'] - (member['thumbnail_offset'] - (thumbnail.height / members.length) * member['thumbnail_index']) * (((member.r * 2) * members.length) / thumbnail.height);
+            }
+          });
+        }
         return node_circles.attr({
           'cx': function(member) {
             return member.x;
@@ -212,10 +214,10 @@
             return member.r * 2;
           },
           'height': function(member) {
-            return member.r * 2;
+            return members.length * member.r * 2;
           },
           'xlink:href': function(member) {
-            return "images/node_thumbnail/" + member['thumbnail'];
+            return 'images/thumbnails.png';
           },
           'clip-path': function(member) {
             return "url(#node-thumbnail-" + member['member_id'] + ")";
@@ -278,8 +280,16 @@
           return updateNodePositions();
         }
       };
+      thumbnail = new Image();
+      is_thumbnail_loaded = false;
       (function() {
         var g, node, node_overlay;
+        thumbnail.onload = function() {
+          d3.selectAll('g.node').classed('img-loaded', true);
+          is_thumbnail_loaded = true;
+          return updateNodePositions();
+        };
+        thumbnail.src = "images/thumbnails.png";
         defs.selectAll('clipPath.node-thumbnail').data(members, function(member) {
           return member['member_id'];
         }).enter().append('clipPath').attr({
@@ -314,13 +324,6 @@
             return "node-" + member['member_id'];
           },
           'class': 'node'
-        }).each(function(member) {
-          var img;
-          img = new Image();
-          img.onload = function() {
-            return d3.select("#node-" + member['member_id']).classed('img-loaded', true);
-          };
-          return img.src = "images/node_thumbnail/" + member['thumbnail'];
         });
         g.append('circle').attr({
           'class': 'frame'
@@ -431,7 +434,7 @@
       force_general.start().alpha(0.0075);
       force_general.on('tick', function() {
         collide();
-        if (++tick % skip === 0) {
+        if (++tick % skip === 0 && is_thumbnail_loaded) {
           return updateNodePositions();
         }
       });
@@ -553,7 +556,9 @@
                 }
                 j += ticks_incremented;
                 target_member = _.merge(target_member, target_member['general_mode_positions']);
-                updateNodePositions();
+                if (is_thumbnail_loaded) {
+                  updateNodePositions();
+                }
                 if (force_focus.alpha() > 0) {
                   return requestAnimationFrame(render);
                 }
